@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cache="http://www.springframework.org/schema/cache"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/aop
+                http://www.springframework.org/schema/aop/spring-aop.xsd
+                http://www.springframework.org/schema/tx
+                http://www.springframework.org/schema/tx/spring-tx.xsd
+                http://www.springframework.org/schema/context
+                http://www.springframework.org/schema/context/spring-context.xsd
+                 http://www.springframework.org/schema/cache
+                 http://www.springframework.org/schema/cache/spring-cache.xsd">
+    <!--两者功能是一样的  一般用第一个  有了第一个 第二个可以省略-->
+    <!--自动扫描 指定标签管理目录-->
+    <context:component-scan base-package="com.demo.sl"/>
+    <!--&lt;!&ndash; enable autowire 启用自动装配&ndash;&gt;
+    <context:annotation-config/>-->
+
+    <!--mysql数据库默认8小时会断掉所有的连接-->
+
+    <!-- Properties文件读取配置，base的properties 读取jdbc配置-->
+    <context:property-placeholder location="classpath:system.properties"/>
+
+    <!-- JNDI获取数据源一种标准的java命名系统接口(使用dbcp连接池) -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="${driverClassName}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${uname}"/>
+        <property name="password" value="${password}"/>
+        <!--数据库连接池 初始化连接 创建的连接个数 默认是0-->
+        <property name="initialSize" value="${initialSize}"/>
+        <!--同时连接的最多连接数 默认是8-->
+        <property name="maxActive" value="${maxActive}"/>
+        <!--最大空闲数 默认是8-->
+        <property name="maxIdle" value="${maxIdle}"/>
+        <!--最小空闲数 默认是0 越接近maxIdle性能越好-->
+        <property name="minIdle" value="${minIdle}"/>
+        <!--最大等待时间 默认值是无限等待 -1 毫秒-->
+        <property name="maxWait" value="${maxWait}"/>
+        <!--连接数在超出这个时间回收 默认300s-->
+        <property name="removeAbandonedTimeout" value="${removeAbandonedTimeout}"/>
+        <!--开启无用连接回收机制 默认是false-->
+        <property name="removeAbandoned" value="${removeAbandoned}"/>
+        <!-- sql 心跳包 为了保证数据库连接池是真实有效的连接-->
+        <!--开启evict的定时校验 循环校验 evict依法回收-->
+        <property name="testWhileIdle" value="true"/>
+        <!--在进行borrowObject处理时，会对拿到的连接进行校验 默认false不校验-->
+        <property name="testOnBorrow" value="false"/>
+        <!--在进行returnObject处理时，会对返回的连接进行校验 默认false不校验-->
+        <property name="testOnReturn" value="false"/>
+        <!--校验使用的sql语句 validationQuery 复杂的校验sql会影响性能-->
+        <property name="validationQuery" value="select 1"/>
+        <!--定义Evict的时间间隔 单位是：毫秒 大于0才会开启evict-->
+        <property name="timeBetweenEvictionRunsMillis" value="60000"/>
+        <!--配置每次校验连接的数量 一般等于最大连接数 maxActive-->
+        <property name="numTestsPerEvictionRun" value="${maxActive}"/>
+    </bean>
+
+    <!--redis 配置 开始-->
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxActive" value="90"/>
+        <property name="maxIdle" value="5"/>
+        <property name="maxWait" value="1000"/>
+        <!--拿到一个jedis是否是可用的 是否进行验证 true进行验证-->
+        <property name="testOnBorrow" value="true"/>
+    </bean>
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool" destroy-method="destroy">
+        <constructor-arg ref="jedisPoolConfig"/>
+        <!--redis服务器的地址-->
+        <constructor-arg value="${redis.server}"/>
+        <!--端口号-->
+        <constructor-arg value="${redis.port}"/>
+    </bean>
+    <bean id="redisAPI" class="com.demo.sl.common.RedisAPI">
+        <property name="jedisPool" ref="jedisPool"/>
+    </bean>
+    <!-- redis 配置结束 -->
+
+
+    <!-- define the SqlSessionFactory, notice that configLocation is not needed when you use MapperFactoryBean -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+    </bean>
+    <!-- scan for mappers and let them be autowired -->
+    <!-- Dao接口所在包名，Spring会自动查找其下的类 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.demo.sl.dao"/>
+    </bean>
+    <!-- mybatis-spring 配置 结束 -->
+
+
+    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    <!-- enable transaction demarcation with annotations -->
+    <!--使用annotation定义事务 可以使用@Transactional（“”）声明事务-->
+    <!--annotation注释 transactional-->
+    <tx:annotation-driven />
+
+    <!-- AOP 事务处理 开始 -->
+    <!--采用自动代理模式-->
+    <aop:aspectj-autoproxy/>
+    <!--定义为true使用代理标签类-->
+    <!--expression表达式-->
+    <aop:config proxy-target-class="true">
+        <aop:pointcut expression="execution(* *com.demo.sl.service..*(..))" id="transService"/>
+        <aop:advisor pointcut-ref="transService" advice-ref="txAdvice"/>
+    </aop:config>
+    <!--txAdvice 事务处理 propagation="REQUIRED"都需要事务处理 以hl开头的所有service方法
+    rollback-for什么情况下进行回滚-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="hl*" propagation="REQUIRED" rollback-for="Exception"/>
+        </tx:attributes>
+    </tx:advice>
+    <!-- AOP 事务处理 结束 -->
+
+</beans>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+  <!--在classpath中加载自身的spring配置文件 指定spring bean的配置文件所在目录-->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring.xml</param-value>
+  </context-param>
+  <!--spring的监听器 spring配置 加载  web在启动时 spring的各个配置要通过监听来做-->
+  <!--ContextLoaderListener的作用就是启动Web容器时，自动装配ApplicationContext的配置信息。
+  (个人理解contextConfigLocation)-->
+  <!--将web容器与spring容器整合 监听web容器的开启与关闭-->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <!--监听器 监听http请求事件-->
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+  <!--防止spring内存溢出监听器-->
+  <listener>
+    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+  </listener>
+  <!--log4j配置-->
+  <context-param>
+    <param-name>log4jConfigLocation</param-name>
+    <param-value>classpath:log4j.properties</param-value>
+  </context-param>
+  <!--&lt;!&ndash;项目根目录 日志保存路径&ndash;&gt;
+  <context-param>
+    <param-name>webAppRootKey</param-name>
+    <param-value>SL-sale.root</param-value>
+  </context-param>
+  &lt;!&ndash;spring加载log4j的监听&ndash;&gt;
+  <listener>
+    <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+  </listener>-->
+<!--编码过滤器 以utf8为准 防止乱码-->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <!--编码方式-->
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+    <!--强制进行编码转换  encoding编码-->
+    <init-param>
+      <param-name>forceEncoding</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </filter>
+  <!--根目录下所有的 过滤编码都起作用-->
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+<!--加载springMVC配置文件-->
+  <servlet>
+    <servlet-name>SpringMVC</servlet-name>
+    <!--定义Spring的前端控制器DispatcherServlet--> <!--进行调度工作 控制流程 如视图，文件上传-->
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <!--初始化参数-->
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:spring-servlet.xml</param-value>
+    </init-param>
+    <!--设置加载顺序，优先加载 启动顺序-->
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <!--根目录下所有的都要经过前端控制器进而转发-->
+  <servlet-mapping>
+    <servlet-name>SpringMVC</servlet-name>
+    <url-pattern>/</url-pattern>
+  </servlet-mapping>
+  <!--默认首页-->
+  <welcome-file-list>
+    <welcome-file>/WEB-INF/pages/index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

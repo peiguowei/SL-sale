@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.sl.dao.IFunctionDao">
+    <resultMap id="functionMap" type="com.demo.sl.entity.Function" extends="authorityMap">
+        <id property="id" column="id"/>
+        <result property="functionCode" column="functionCode"/>
+        <result property="functionName" column="functionName"/>
+        <result property="funcUrl" column="funcUrl"/>
+        <result property="parentId" column="parentId"/>
+        <result property="creationTime" column="creationTime"/>
+    </resultMap>
+    <resultMap id="authorityMap" type="com.demo.sl.entity.Authority">
+        <id property="id" column="id"/>
+        <result property="roleId" column="role_id"/>
+        <result property="functionId" column="functionId"/>
+        <result property="userTypeId" column="userTypeId"/>
+        <result property="creationTime" column="creationTime"/>
+        <result property="createdBy" column="createdBy"/>
+    </resultMap>
+    <select id="getMainFunction" resultMap="functionMap">
+        SELECT * FROM au_function WHERE id IN (SELECT functionId FROM au_authority WHERE role_id=#{roleId}) AND parentId=0;
+    </select>
+    <select id="getSubFunction" resultMap="functionMap">
+        SELECT * FROM au_function WHERE parentId=#{id} AND id IN (SELECT functionId FROM au_authority WHERE role_id=#{roleId})
+    </select>
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.sl.dao.IUserDao">
+    <resultMap id="userMap" type="com.demo.sl.entity.User">
+        <id property="id" column="id"/>
+        <result property="loginCode" column="loginCode"/>
+        <result property="password" column="password"/>
+        <result property="password2" column="password2"/>
+        <result property="userName" column="userName"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="cardType" column="cardType"/>
+        <result property="cardTypeName" column="cardTypeName"/>
+        <result property="idCard" column="idCard"/>
+        <result property="country" column="country"/>
+        <result property="mobile" column="mobile"/>
+        <result property="email" column="email"/>
+        <result property="userAddress" column="userAddress"/>
+        <result property="postCode" column="postCode"/>
+        <result property="createTime" column="createTime"/>
+        <result property="referId" column="referId"/>
+        <result property="referCode" column="referCode"/>
+        <result property="roleId" column="roleId"/>
+        <result property="roleName" column="roleName"/>
+        <result property="userType" column="userType"/>
+        <result property="userTypeName" column="userTypeName"/>
+        <result property="isStart" column="isStart"/>
+        <result property="lastUpdateTime" column="lastUpdateTime"/>
+        <result property="lastLoginTime" column="lastLoginTime"/>
+        <result property="bankName" column="bankName"/>
+        <result property="bankAccount" column="bankAccount"/>
+        <result property="accountHolder" column="accountHolder"/>
+        <result property="idCardPicPath" column="idCardPicPath"/>
+        <result property="bankPicPath" column="bankPicPath"/>
+    </resultMap>
+    <select id="userLogin" resultMap="userMap">
+        SELECT * FROM au_user WHERE loginCode=#{loginCode}
+    </select>
+    <update id="updateUserTable">
+        UPDATE au_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="loginCode!=null">loginCode=#{loginCode},</if>
+            <if test="password!=null">password=#{password},</if>
+            <if test="password2!=null">password2=#{password2},</if>
+            <if test="userName!=null">userName=#{userName},</if>
+            <if test="sex!=null">sex=#{sex},</if>
+            <if test="birthday!=null">birthday=#{birthday},</if>
+            <if test="cardType!=null">cardType=#{cardType},</if>
+            <if test="cardTypeName!=null">cardTypeName=#{cardTypeName},</if>
+            <if test="idCard!=null">idCard=#{idCard},</if>
+            <if test="country!=null">country=#{country},</if>
+            <if test="mobile!=null">mobile=#{mobile},</if>
+            <if test="email!=null">email=#{email},</if>
+            <if test="userAddress!=null">userAddress=#{userAddress},</if>
+            <if test="postCode!=null">postCode=#{postCode},</if>
+            <if test="createTime!=null">createTime=#{createTime},</if>
+            <if test="referId!=null">referId=#{referId},</if>
+            <if test="referCode!=null">referCode=#{referCode},</if>
+            <if test="roleId!=null">roleId=#{roleId},</if>
+            <if test="roleName!=null">roleName=#{roleName},</if>
+            <if test="userType!=null">userType=#{userType},</if>
+            <if test="userTypeName!=null">userTypeName=#{userTypeName},</if>
+            <if test="isStart!=null">isStart=#{isStart},</if>
+            <if test="lastUpdateTime!=null">lastUpdateTime=#{lastUpdateTime},</if>
+            <if test="lastLoginTime!=null">lastLoginTime=#{lastLoginTime},</if>
+            <if test="bankName!=null">bankName=#{bankName},</if>
+            <if test="bankAccount!=null">bankAccount=#{bankAccount},</if>
+            <if test="accountHolder!=null">accountHolder=#{accountHolder},</if>
+            <if test="idCardPicPath!=null">idCardPicPath=#{idCardPicPath},</if>
+            <if test="bankPicPath!=null">bankPicPath=#{bankPicPath},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+</mapper>
