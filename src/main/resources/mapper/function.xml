@@ -13,16 +13,16 @@
     </resultMap>
     <resultMap id="authorityMap" type="com.demo.sl.entity.Authority">
         <id property="id" column="id"/>
-        <result property="roleId" column="role_id"/>
+        <result property="roleId" column="roleId"/>
         <result property="functionId" column="functionId"/>
         <result property="userTypeId" column="userTypeId"/>
         <result property="creationTime" column="creationTime"/>
         <result property="createdBy" column="createdBy"/>
     </resultMap>
     <select id="getMainFunction" resultMap="functionMap">
-        SELECT * FROM au_function WHERE id IN (SELECT functionId FROM au_authority WHERE role_id=#{roleId}) AND parentId=0;
+        SELECT * FROM au_function WHERE id IN (SELECT functionId FROM au_authority WHERE roleId=#{roleId}) AND parentId=0;
     </select>
     <select id="getSubFunction" resultMap="functionMap">
-        SELECT * FROM au_function WHERE parentId=#{id} AND id IN (SELECT functionId FROM au_authority WHERE role_id=#{roleId})
+        SELECT * FROM au_function WHERE parentId=#{id} AND id IN (SELECT functionId FROM au_authority WHERE roleId=#{roleId})
     </select>
 </mapper>

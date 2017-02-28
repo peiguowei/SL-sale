@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  *用户实体类
  */
-public class User extends Base {
+public class  User extends Base {
     private String loginCode;//登录账号
     private String password;//登录密码（初始密码是证件号码后六位）
     private String password2;//二级密码

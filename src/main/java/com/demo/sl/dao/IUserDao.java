@@ -17,5 +17,5 @@ public interface IUserDao {
      * 更改用户的数据表
      * @param user 待更改的数据跟更改条件
      */
-    void updateUserTable(User user);
+    boolean updateUserTable(User user);
 }

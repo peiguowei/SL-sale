@@ -42,4 +42,22 @@ public class UserService {
         userDao.updateUserTable(userTwo);//调用更改数据库操作的方法
         return "success";
     }
+
+    /**
+     * 获得登录用户的所有信息
+     * @param user 现在登录的用户的各别信息
+     * @return 非null 用户的所有信息
+     */
+    public User loginUserMessage(User user){
+        return userDao.userLogin(user.getLoginCode());
+    }
+
+    /**
+     * 更改当前登录用户的密码
+     * @param user 包含登录的条件
+     * @return true成功 false 失败
+     */
+    public boolean updatePwd(User user){
+        return userDao.updateUserTable(user);
+    }
 }
