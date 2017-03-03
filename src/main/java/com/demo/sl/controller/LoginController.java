@@ -2,12 +2,14 @@ package com.demo.sl.controller;
 
 
 
+import com.demo.sl.common.Constants;
 import com.demo.sl.common.RedisAPI;
 import com.demo.sl.entity.Function;
 import com.demo.sl.entity.Menu;
 import com.demo.sl.entity.User;
-import com.demo.sl.service.FunctionService;
-import com.demo.sl.service.UserService;
+import com.demo.sl.service.Function.FunctionService;
+import com.demo.sl.service.user.UserService;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -61,7 +63,7 @@ public class LoginController extends BaseController {
         //得到session对象
         HttpSession session = req.getSession();
         //得到登录信息
-        User user =(User)session.getAttribute("user");
+        User user =(User)session.getAttribute(Constants.SESSION_USER);
         logger.debug("main==========================================");
         List<Menu> menuList=new ArrayList();//菜单列表结合
         if (user!=null){   //user不等于空 证明已经登录
@@ -98,7 +100,7 @@ public class LoginController extends BaseController {
                     return new ModelAndView("redirect:/");
                 }
             }
-            session.setAttribute("functionMenu",model);
+            session.setAttribute(Constants.SESSION_BASE_MODEL,model);
             return new ModelAndView("main",model);
         }
         return new ModelAndView("redirect:/");
@@ -107,7 +109,7 @@ public class LoginController extends BaseController {
     @RequestMapping(path = "/logout.html",method = RequestMethod.GET)
     public String logout(HttpServletRequest req){
         HttpSession session = req.getSession();//得到session对象
-        session.removeAttribute("user");//清空session
+        session.removeAttribute(Constants.SESSION_USER);//清空session
         session.invalidate();//session失效
         return "index";
     }

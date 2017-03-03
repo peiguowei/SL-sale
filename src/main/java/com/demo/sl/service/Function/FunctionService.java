@@ -1,6 +1,6 @@
-package com.demo.sl.service;
+package com.demo.sl.service.Function;
 
-import com.demo.sl.dao.IFunctionDao;
+import com.demo.sl.dao.function.IFunctionDao;
 import com.demo.sl.entity.Authority;
 import com.demo.sl.entity.Function;
 import org.springframework.stereotype.Service;

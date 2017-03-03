@@ -86,10 +86,10 @@
 	
 	<!-- 华丽丽滴分割线 北大青鸟 start 2014-->
 	
-	<!-- add by bdqn_hl 2013-2-27 start multiple file ajaxfileupload plugin-->
+	<!-- add by bdqn_hl 2013-2-27 start multiple file ajaxfileupload plugin--><%--ajax的上传--%>
 	<script src="/statics/js/ajaxfileupload.js"></script>
 	<!-- add by bdqn_hl 2013-2-27 end-->
-	<!-- add by bdqn_hl 2013-3-17 start WdatePicker plugin-->
+	<!-- add by bdqn_hl 2013-3-17 start WdatePicker plugin--><%--日期组件--%>
 	<script type="text/javascript" src="/statics/medire/WdatePicker.js"></script>
 	<!-- add by bdqn_hl 2013-3-17 end-->
 

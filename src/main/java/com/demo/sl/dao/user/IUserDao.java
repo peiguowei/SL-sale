@@ -1,4 +1,4 @@
-package com.demo.sl.dao;
+package com.demo.sl.dao.user;
 
 import com.demo.sl.entity.User;
 

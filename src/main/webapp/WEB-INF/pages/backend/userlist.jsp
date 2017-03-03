@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@include file="/WEB-INF/pages/common/head.jsp"%>
+<%@include file="/WEB-INF/pages/common/head.jsp"%><%--导航条--%>
 <div>
 	<ul class="breadcrumb">
 		<li><a href="#">后台管理</a> <span class="divider">/</span></li>
@@ -35,11 +35,11 @@
 							是否启用：
 							 <select name="s_isStart" style="width:100px;">
 								<option value="" selected="selected">--请选择--</option>
-								　　 <c:if test="${s_isStart == 1}">  
+								　　 <c:if test="${s_isStart == 1}">  <%--1启用--%>
 									　　<option value="1" selected="selected">启用</option>
 										<option value="2">未启用</option>
 								　　 </c:if>  
-								　　 <c:if test="${s_isStart == 2}">  
+								　　 <c:if test="${s_isStart == 2}">  <%--2未启用--%>
 									　    <option value="2" selected="selected">未启用</option>
 										<option value="1">启用</option>
 								 	 </c:if>
@@ -510,7 +510,7 @@
 			</div>
 	 </div>
 	 
-<%@include file="/WEB-INF/pages/common/foot.jsp"%>
+<%@include file="/WEB-INF/pages/common/foot.jsp"%><%--底部--%>
 <script type="text/javascript">
     var cartTypeListJson =	[<c:forEach  items="${cardTypeList}" var="cardType"> 
 							{"valueId":"${cardType.valueId}","valueName":"${cardType.valueName}"},

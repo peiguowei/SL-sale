@@ -1,6 +1,7 @@
-package com.demo.sl.service;
+package com.demo.sl.service.user;
 
-import com.demo.sl.dao.IUserDao;
+import com.demo.sl.common.Constants;
+import com.demo.sl.dao.user.IUserDao;
 import com.demo.sl.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class UserService {
         //得到会话变量 存储用户的信息
         HttpSession session = req.getSession();
         loginUser.setPassword("");
-        session.setAttribute("user",loginUser);
+        session.setAttribute(Constants.SESSION_USER,loginUser);
         //更新数据库 lastLoginTime
         User userTwo=new User();
         userTwo.setId(loginUser.getId());//更改的条件
