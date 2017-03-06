@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 用户业务操作层
@@ -60,5 +61,23 @@ public class UserService {
      */
     public boolean updatePwd(User user){
         return userDao.updateUserTable(user);
+    }
+
+    /**
+     * 得到user表有几条数据
+     * @param user 可以为空 为空代表无条件查询 否则有条件的查询
+     * @return
+     */
+    public int getUserCountService(User user){
+        return userDao.userCount(user);
+    }
+
+    /**
+     * 查询每页显示的内容
+     * @param user 查询条件
+     * @return 非null 内容
+     */
+    public List<User> getUserListService(User user){
+        return userDao.getUserList(user);
     }
 }

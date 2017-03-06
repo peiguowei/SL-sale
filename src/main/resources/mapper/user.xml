@@ -73,4 +73,41 @@
         </trim>
         WHERE id=#{id}
     </update>
+    <!--得到user表中的总数-->
+    <select id="userCount" resultType="int" parameterType="com.demo.sl.entity.User">
+        SELECT COUNT(*) FROM au_user
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="loginCode!=null">
+                and loginCode LIKE #{loginCode}
+            </if>
+            <if test="referCode!=null">
+                and referCode LIKE #{referCode}
+            </if>
+            <if test="roleId!=null">
+                and roleId=#{roleId}
+            </if>
+            <if test="isStart!=null">
+                and isStart=#{isStart}
+            </if>
+        </trim>
+    </select>
+    <!--得到user表的详细内容-->
+    <select id="getUserList" resultMap="userMap">
+        SELECT * FROM au_user
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="loginCode!=null">
+                and loginCode LIKE #{loginCode}
+            </if>
+            <if test="referCode!=null">
+                and referCode LIKE #{referCode}
+            </if>
+            <if test="roleId!=null">
+                and roleId=#{roleId}
+            </if>
+            <if test="isStart!=null">
+                and isStart=#{isStart}
+            </if>
+        </trim>
+        ORDER BY createTime DESC limit #{startNum},#{pageSize}
+    </select>
 </mapper>

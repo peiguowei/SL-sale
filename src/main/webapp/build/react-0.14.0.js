@@ -4203,7 +4203,7 @@ function escapeUserProvidedKey(text) {
  * traversal. Allows avoiding binding callbacks.
  *
  * @constructor ForEachBookKeeping
- * @param {!function} forEachFunction Function to perform traversal with.
+ * @param {!function} forEachFunction function to perform traversal with.
  * @param {?*} forEachContext Context to perform context with.
  */
 function ForEachBookKeeping(forEachFunction, forEachContext) {
@@ -4250,7 +4250,7 @@ function forEachChildren(children, forEachFunc, forEachContext) {
  *
  * @constructor MapBookKeeping
  * @param {!*} mapResult Object containing the ordered map of results.
- * @param {!function} mapFunction Function to perform mapping with.
+ * @param {!function} mapFunction function to perform mapping with.
  * @param {?*} mapContext Context to perform mapping with.
  */
 function MapBookKeeping(mapResult, keyPrefix, mapFunction, mapContext) {
@@ -4863,9 +4863,9 @@ function mergeIntoWithNoDuplicateKeys(one, two) {
 /**
  * Creates a function that invokes two functions and merges their return values.
  *
- * @param {function} one Function to invoke first.
- * @param {function} two Function to invoke second.
- * @return {function} Function that invokes the two argument functions.
+ * @param {function} one function to invoke first.
+ * @param {function} two function to invoke second.
+ * @return {function} function that invokes the two argument functions.
  * @private
  */
 function createMergedResultFunction(one, two) {
@@ -4887,9 +4887,9 @@ function createMergedResultFunction(one, two) {
 /**
  * Creates a function that invokes two functions and ignores their return vales.
  *
- * @param {function} one Function to invoke first.
- * @param {function} two Function to invoke second.
- * @return {function} Function that invokes the two argument functions.
+ * @param {function} one function to invoke first.
+ * @param {function} two function to invoke second.
+ * @return {function} function that invokes the two argument functions.
  * @private
  */
 function createChainedFunction(one, two) {

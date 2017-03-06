@@ -1,4 +1,4 @@
-package com.demo.sl.service.Function;
+package com.demo.sl.service.function;
 
 import com.demo.sl.dao.function.IFunctionDao;
 import com.demo.sl.entity.Authority;

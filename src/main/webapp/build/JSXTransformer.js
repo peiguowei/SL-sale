@@ -188,7 +188,7 @@ function run(code, url, options) {
  * Load script from the provided url and pass the content to the callback.
  *
  * @param {string} url The location of the script src
- * @param {function} callback Function to call with the content of url
+ * @param {function} callback function to call with the content of url
  * @internal
  */
 function load(url, successCallback, errorCallback) {
@@ -2577,7 +2577,7 @@ process.umask = function() { return 0; };
         PropertyAfterSpreadProperty: 'A rest property must be the final property of an object literal',
         ObjectPatternAsRestParameter: 'Invalid rest parameter',
         ObjectPatternAsSpread: 'Invalid spread argument',
-        StrictFunctionName: 'Function name may not be eval or arguments in strict mode',
+        StrictFunctionName: 'function name may not be eval or arguments in strict mode',
         StrictOctalLiteral: 'Octal literals are not allowed in strict mode.',
         StrictDelete: 'Delete of an unqualified identifier in strict mode.',
         StrictDuplicateProperty: 'Duplicate data property in object literal not allowed in strict mode',
@@ -7989,7 +7989,7 @@ process.umask = function() { return 0; };
         return markerApply(marker, delegate.createExpressionStatement(expr));
     }
 
-    // 13 Function Definition
+    // 13 function Definition
 
     function parseConciseBody() {
         if (match('{')) {
@@ -10360,7 +10360,7 @@ define(function (_dereq_, exports, module) {
    * @param aHigh Indices here and higher do not contain the needle.
    * @param aNeedle The element being searched for.
    * @param aHaystack The non-empty array being searched.
-   * @param aCompare Function which takes two elements and returns -1, 0, or 1.
+   * @param aCompare function which takes two elements and returns -1, 0, or 1.
    */
   function recursiveSearch(aLow, aHigh, aNeedle, aHaystack, aCompare) {
     // This function terminates when one of the following is true:
@@ -12464,7 +12464,7 @@ function visitLocalClosureIdentifiers(node, path, state) {
   switch (node.type) {
     case Syntax.ArrowFunctionExpression:
     case Syntax.FunctionExpression:
-      // Function expressions don't get their names (if there is one) added to
+      // function expressions don't get their names (if there is one) added to
       // the closure scope they're defined in
       return false;
     case Syntax.ClassDeclaration:
@@ -13456,8 +13456,8 @@ function visitCallSpread(traverse, node, path, state) {
 
   if (node.type === Syntax.NewExpression) {
     // Input  = new Set(1, 2, ...list)
-    // Output = new (Function.prototype.bind.apply(Set, [null, 1, 2].concat(list)))
-    utils.append('new (Function.prototype.bind.apply(', state);
+    // Output = new (function.prototype.bind.apply(Set, [null, 1, 2].concat(list)))
+    utils.append('new (function.prototype.bind.apply(', state);
     process(traverse, node.callee, path, state);
   } else if (node.callee.type === Syntax.MemberExpression) {
     // Input  = get().fn(1, 2, ...more)
@@ -14355,7 +14355,7 @@ function isFunctionNode(node) {
 }
 
 // -------------------------------------------------------
-// 4. Function body for structured parameters.
+// 4. function body for structured parameters.
 //
 // function foo({x, y}) { x; y; }
 // -------------------------------------------------------

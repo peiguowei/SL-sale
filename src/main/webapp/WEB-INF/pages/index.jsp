@@ -64,7 +64,7 @@
 </div>
 
 <script src="../statics/js/jquery-1.7.2.min.js"></script>
-<script src="..//statics/localjs/index.js"></script>
+<script src="../statics/localjs/index.js"></script>
 </body>
 </html>
 

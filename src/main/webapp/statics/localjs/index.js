@@ -1,8 +1,8 @@
 $(document).ready(function () {
     $("#loginBtn").click(function(){
-		var user = new Object();
-		user.loginCode = $.trim($("#logincode").val());
-		user.password =  $.trim($("#password").val());
+        var user = new Object();
+        user.loginCode = $.trim($("#logincode").val());
+        user.password =  $.trim($("#password").val());
         user.isStart = 1;
 
         if(user.loginCode == "" || user.loginCode == null){
@@ -15,7 +15,7 @@ $(document).ready(function () {
             $("#formtip").html("对不起，登录密码不能为空。");
         }else{
             $("#formtip").html("");
-           $.ajax({
+            $.ajax({
                 url:'/login.html',
                 type:'POST',
                 data:{user:JSON.stringify(user)},
@@ -49,4 +49,3 @@ $(document).ready(function () {
         }
     });
 })
-

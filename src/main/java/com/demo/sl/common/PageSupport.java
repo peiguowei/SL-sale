@@ -10,7 +10,7 @@ public class PageSupport {
     private Integer pageCount;//总页数
     private Integer totalCount=0;//总行数
     private Integer page=1;//当前页
-    private Integer pageSize=10;//一页显示的行数
+    private Integer pageSize=1;//一页显示的行数
     private Integer num=3;//当前页前后显示的个数
     private List items=new ArrayList();//当前页面内容的集合
 
@@ -20,10 +20,6 @@ public class PageSupport {
      */
     public Integer getPageCount() {
         return pageCount;
-    }
-
-    public void setPageCount(Integer pageCount) {
-        this.pageCount = pageCount;
     }
 
     /**
@@ -176,10 +172,12 @@ public class PageSupport {
      */
     public List<Integer> getNextPages(){
         List<Integer> list=new ArrayList();
-        Integer _endPage=pageCount;
+        Integer _endPage=num;
         if (pageCount!=null){
             if (num<pageCount&&(page+num)<pageCount){
-                _endPage=page+num;
+                _endPage=page+_endPage;
+            }else {
+                _endPage=pageCount;
             }
         }
         for (Integer i=page+1;i<=_endPage;i++){

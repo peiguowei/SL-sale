@@ -2,6 +2,8 @@ package com.demo.sl.dao.user;
 
 import com.demo.sl.entity.User;
 
+import java.util.List;
+
 /**
  *用户接口 待实现的用户增删查改
  */
@@ -18,4 +20,18 @@ public interface IUserDao {
      * @param user 待更改的数据跟更改条件
      */
     boolean updateUserTable(User user);
+
+    /**
+     * 用户表au_user表的总条数
+     * @param user 查询条件
+     * @return
+     */
+    int userCount(User user);
+
+    /**
+     * 得到user表的内容
+     * @param user 1.有条件2.可无条件
+     * @return
+     */
+    List<User> getUserList(User user);
 }

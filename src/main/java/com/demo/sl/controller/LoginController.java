@@ -7,7 +7,7 @@ import com.demo.sl.common.RedisAPI;
 import com.demo.sl.entity.Function;
 import com.demo.sl.entity.Menu;
 import com.demo.sl.entity.User;
-import com.demo.sl.service.Function.FunctionService;
+import com.demo.sl.service.function.FunctionService;
 import com.demo.sl.service.user.UserService;
 
 import net.sf.json.JSONArray;

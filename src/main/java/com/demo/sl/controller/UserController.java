@@ -1,11 +1,15 @@
 package com.demo.sl.controller;
 
 import com.demo.sl.common.Constants;
+import com.demo.sl.common.PageSupport;
 import com.demo.sl.common.SQLTools;
+import com.demo.sl.entity.DataDictionary;
 import com.demo.sl.entity.Role;
 import com.demo.sl.entity.User;
+import com.demo.sl.service.data_dictionary.DataDictionaryService;
 import com.demo.sl.service.role.RoleService;
 import com.demo.sl.service.user.UserService;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -21,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +39,8 @@ public class UserController extends BaseController{
     private UserService userService;
     @Resource
     private RoleService roleService;
+    @Resource
+    private DataDictionaryService dataDictionaryService;
     //修改密码
     @RequestMapping(path = "/backend/modifyPwd.html",method = RequestMethod.POST)
     @ResponseBody
@@ -76,6 +83,7 @@ public class UserController extends BaseController{
     //得到用户列表的信息(分页)
     @RequestMapping("/backend/userlist.html")
     public ModelAndView userList(Model model,HttpServletRequest req,
+                                    @RequestParam(required = false) Integer currentpage,
                                     @RequestParam(required = false) String s_loginCode,
                                     @RequestParam(required = false) String s_referCode,
                                     @RequestParam(required = false)String s_roleId,
@@ -85,15 +93,27 @@ public class UserController extends BaseController{
 //        得到菜单列表
         Map<String, Object> baseModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
         List<Role> roleList=null;
+        List<DataDictionary> cardTypeList=null;
         if (baseModel==null){
             return new ModelAndView("redirect:/");
         }else {
+            //创建datadictionary实例
+            DataDictionary dataDictionary=new DataDictionary();
+            dataDictionary.setTypeCode("CARD_TYPE");
+            //调用查询数字字典的业务 目的：查询所有的证件类型
+            try {
+                cardTypeList = dataDictionaryService.getDataDictionaryListService(dataDictionary);
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.info("===================得到数据字典信息失败 ON.1====================");
+            }
             try{
                 //得到角色列表的信息（用户管理搜索栏）
                 roleList = roleService.getRoleListService();
             }catch (Exception e){
                 e.printStackTrace();
                 logger.info("======================得到角色信息表失败===========");
+
             }
         }
         //模糊查询
@@ -115,8 +135,68 @@ public class UserController extends BaseController{
             user.setRoleId(null);
         }
         //分页处理
+        //创建pageSupport的实例
+        PageSupport page=new PageSupport();
+        //统计总共有多少条 两种情况1.有条件 2.无条件
+        //调用查询总条数业务
+        int count=0;
+        try{
+            count= userService.getUserCountService(user);
+            page.setTotalCount(count);//设置总个数
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.info("=================查询得到总条数异常==============");
+        }
+        //分页导航条以及内容
+
+        if (page.getTotalCount()>0){//总页数不为0
+            if (currentpage!=null){//证明参数
+                page.setPage(currentpage);
+            }
+            if (page.getPage()<=0){//防止恶意传参
+                page.setPage(1);
+            }
+            if (page.getPage()>page.getPageCount()){
+                page.setPage(page.getPageCount());
+            }
+            user.setStartNum((page.getPage()-1)*page.getPageSize());//分页查询起始行
+            user.setPageSize(page.getPageSize());//显示多少行
+            //调用查询内容的服务
+            List<User> userList=null;
+            try {
+                userList = userService.getUserListService(user);
+            }catch (Exception e){
+                e.printStackTrace();
+                logger.info("==================得到用户详细信息失败================");
+            }
+            page.setItems(userList);
+        }else{
+            page.setItems(null);
+        }
         model.addAllAttributes(baseModel);
+        model.addAttribute("page",page);
+        model.addAttribute("s_loginCode",s_loginCode);
+        model.addAttribute("s_referCode",s_referCode);
+        model.addAttribute("s_roleId",s_roleId);
+        model.addAttribute("s_isStart",s_isStart);
         model.addAttribute("roleList",roleList);
+        model.addAttribute("cardTypeList",cardTypeList);
         return new ModelAndView("/backend/userlist");
+    }
+    @RequestMapping(path = "/backend/loadUserTypeList.html",produces = "text/html;charset=utf-8")
+    @ResponseBody
+    public Object getUserTypeList(@RequestParam(required = false)String s_role){
+        String getJson="";
+        try {
+            DataDictionary dataDictionary=new DataDictionary();
+            dataDictionary.setTypeCode("USER_TYPE");
+            List<DataDictionary> userTypeList = dataDictionaryService.getDataDictionaryListService(dataDictionary);
+            JSONArray jsonArray = JSONArray.fromObject(userTypeList);
+            getJson= jsonArray.toString();
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.info("===================得到数据字典信息失败 ON.2====================");
+        }
+        return getJson;
     }
 }
