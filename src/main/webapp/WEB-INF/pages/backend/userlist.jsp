@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@include file="/WEB-INF/pages/common/head.jsp"%><%--导航条--%>
+
 <div>
 	<ul class="breadcrumb">
 		<li><a href="#">后台管理</a> <span class="divider">/</span></li>
@@ -127,7 +128,7 @@
 						<c:if test="${page.pageCount !=null}">
 							<c:choose>
 						  	<c:when test="${page.page == page.pageCount}">
-						  	<li class="active"><a href="javascript:void();" title="尾页">尾页</a></li>
+						  	<li class="active"><a href="javascript:void(0);" title="尾页">尾页</a></li>
 						  	</c:when>
 						  	<c:otherwise>
 						  	<li><a href="/backend/userlist.html?currentpage=${page.pageCount}&s_loginCode=${s_loginCode}&s_referCode=${s_referCode}&s_roleId=${s_roleId}&s_isStart=${s_isStart}" title="尾页">尾页</a></li>
@@ -208,7 +209,7 @@
 					</li>
 					<li>
 					  <label>生日：</label>
-					  <input class="Wdate" id="a_birthday" size="15" name="birthday" readonly="readonly"  type="text" onClick="WdatePicker();"/>
+					  <input class="Wdate" id="a_birthday" size="15" name="birthday" readonly="readonly"  type="text" onclick="WdatePicker();"/>
 					  <!--<input type="text" class="input-xlarge datepicker" id="a_birthday" name="birthday" value="" readonly="readonly"/> -->
 					</li>
 					<li>
@@ -335,7 +336,7 @@
 					</li>
 					<li>
 					  <label>生日：</label>
-					  <input class="Wdate" id="m_birthday" size="15" name="birthday" readonly="readonly"  type="text" onClick="WdatePicker();"/>
+					  <input class="Wdate" id="m_birthday" size="15" name="birthday" readonly="readonly"  type="text" onclick="WdatePicker();"/>
 					  <!--<input type="text" class="input-xlarge datepicker" id="m_birthday" name="birthday" readonly="readonly"/>-->
 					</li>
 					<li>
@@ -519,4 +520,5 @@
 						{"id":"${role.id}","roleName":"${role.roleName}"},
 						</c:forEach>{"id":"over","roleName":"over"}];
 </script>
-<script type="text/javascript" src="/statics/localjs/userlist.js"></script> 
+<script type="text/javascript" src="/statics/localjs/userlist.js"></script>
+

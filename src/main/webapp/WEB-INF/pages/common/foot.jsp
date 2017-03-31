@@ -90,8 +90,8 @@
 	<script src="/statics/js/ajaxfileupload.js"></script>
 	<!-- add by bdqn_hl 2013-2-27 end-->
 	<!-- add by bdqn_hl 2013-3-17 start WdatePicker plugin--><%--日期组件--%>
-	<script type="text/javascript" src="/statics/medire/WdatePicker.js"></script>
-	<!-- add by bdqn_hl 2013-3-17 end-->
+<script type="text/javascript" src="/statics/medire/WdatePicker.js"></script>
+    <!-- add by bdqn_hl 2013-3-17 end-->
 
     <script src="/statics/js/bootstrap-datetimepicker.js"></script>
 	

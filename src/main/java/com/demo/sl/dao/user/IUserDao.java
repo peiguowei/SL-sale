@@ -34,4 +34,24 @@ public interface IUserDao {
      * @return
      */
     List<User> getUserList(User user);
+
+    /**
+     * 判断用户名是否重复
+     * @param user 查询条件
+     * @return 0 only 1 重复
+     */
+    int getLoginCodeIsExit(User user);
+
+    /**
+     * 添加用户到数据表
+     * @param user 待添加的数据
+     */
+    void addUser(User user);
+
+    /**
+     * 删除上传的图片
+     * @param user 删除的条件
+     * @return true 删除成功  false 删除失败
+     */
+    boolean delpic(User user);
 }

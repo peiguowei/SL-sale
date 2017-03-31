@@ -110,4 +110,40 @@
         </trim>
         ORDER BY createTime DESC limit #{startNum},#{pageSize}
     </select>
+    <select id="getLoginCodeIsExit" resultType="int" parameterType="com.demo.sl.entity.User">
+        SELECT count(*) FROM au_user
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="loginCode!=null">
+                AND loginCode=#{loginCode}
+            </if>
+            <if test="id!=null">
+                AND id!=#{id}
+            </if>
+        </trim>
+    </select>
+    <!--增加用户-->
+    <insert id="addUser">
+        INSERT INTO au_user(loginCode,password,password2,userName,sex,birthday,cardType,
+							 cardTypeName,idCard,country,mobile,email,userAddress,postCode,
+							 createTime,referId,referCode,roleId,roleName,userType,userTypeName,
+							 isStart,lastUpdateTime,lastLoginTime,bankName,accountHolder,bankAccount,idCardPicPath,bankPicPath)VALUES (
+							 #{loginCode},#{password},#{password2},#{userName},#{sex},#{birthday},
+							 #{cardType},#{cardTypeName},#{idCard},#{country},#{mobile},#{email},#{userAddress},
+							 #{postCode},#{createTime},#{referId},#{referCode},#{roleId},#{roleName},#{userType},
+							 #{userTypeName},#{isStart},#{lastUpdateTime},#{lastLoginTime},#{bankName},#{accountHolder},#{bankAccount},#{idCardPicPath},#{bankPicPath}
+							 )
+    </insert>
+    <!--删除用户上传的图片-->
+    <update id="delpic">
+        UPDATE au_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="idCardPicPath!=null">
+                idCardPicPath=null,
+            </if>
+            <if test="bankPicPath != null">
+                bankPicPath=null,
+            </if>
+        </trim>
+        WHERE id=#{id}
+    </update>
 </mapper>

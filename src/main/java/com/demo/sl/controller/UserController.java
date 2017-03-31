@@ -11,21 +11,23 @@ import com.demo.sl.service.role.RoleService;
 import com.demo.sl.service.user.UserService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -198,5 +200,251 @@ public class UserController extends BaseController{
             logger.info("===================得到数据字典信息失败 ON.2====================");
         }
         return getJson;
+    }
+//    判断用户名是否已存在
+    @RequestMapping(path = "/backend/logincodeisexit.html",produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public String getLoginCodeIsExit(@RequestParam(required = false)String loginCode,
+                                     @RequestParam(required = false)String id ){
+        logger.info("=================得到输入的用户==============="+loginCode);
+        logger.info("=================得到传入的id================="+id);
+        String result="failed";
+        User user=new User();
+        user.setLoginCode(loginCode);
+        if (!id.equals("-1")){//修改用户操作 判断输入用户是否存在
+            user.setId(Integer.valueOf(id));
+        }
+        try{
+            int num = userService.getLoginCodeIsExitService(user);
+            if (num==0){
+                result="only";
+            }else {
+                result="repeat";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return result;
+        }
+        return result;
+    }
+//    添加用户
+    @RequestMapping(path = "/backend/adduser.html",method = RequestMethod.POST)
+    public ModelAndView addUser(HttpServletRequest req, @ModelAttribute("addUser")User addUser){
+//        得到session对象
+        HttpSession session = req.getSession();
+//        得到用户菜单列表 判断是否存在
+         if(session.getAttribute(Constants.SESSION_BASE_MODEL)==null){
+             return new ModelAndView("redirect:/");
+         }
+         try{
+             String idCard = addUser.getIdCard();//证件号码后六位是初始密码
+             String password = idCard.substring(idCard.length() - 6);
+             addUser.setPassword(password);
+             addUser.setPassword2(password);
+             addUser.setCreateTime(new Date());//设置创建时间
+//             得到当前用户的信息
+             User user = (User)session.getAttribute(Constants.SESSION_USER);
+             addUser.setReferId(user.getId());//设置推荐人的id
+             addUser.setLastUpdateTime(new Date());//设置最新更改时间
+//             调用添加用户业务
+             userService.getAddUserService(addUser);
+         }catch (Exception e){
+             e.printStackTrace();
+             logger.info("==================新增用户失败=======================");
+         }
+        return new ModelAndView("redirect:/backend/userlist.html");
+    }
+//    照片上传
+    @RequestMapping(path = "/backend/upload.html",produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public Object fileUpload(@RequestParam(value ="a_fileInputID",required =false)MultipartFile cardFile,
+                             @RequestParam(value = "a_fileInputBank",required = false)MultipartFile bankFile,
+                             @RequestParam(value ="m_fileInputID",required = false)MultipartFile mCardFile,
+                             @RequestParam(value = "m_fileInputBank",required = false)MultipartFile mBankFile,
+                             HttpServletRequest req){
+        logger.info("====================开始=========================");
+//        得到保存上传图片的文件夹地址
+        String path=req.getSession().getServletContext().getRealPath("static"+ File.separator+"uploadFiles");
+        logger.info("==================保存文件==================="+path);
+//        创建数据字典实例
+        DataDictionary dataDictionary=new DataDictionary();
+        dataDictionary.setTypeCode("PERSONALFILE_SIZE");
+        List<DataDictionary> list=null;
+//        根据条件查询出允许上传图片的大小
+        try {
+            list = dataDictionaryService.getDataDictionaryListService(dataDictionary);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.info("=====================查询数据字典得到允许上传图片的大小=================");
+        }
+        Integer fileSize=50000;
+        if(list!=null){
+            if (list.size()==1){
+//                得到允许上传图片大小
+                fileSize=Integer.valueOf(list.get(0).getValueName());
+            }
+        }
+       if (cardFile!=null){//确定上传了文件
+            //得到上传文件的文件名
+           String oldFileName = cardFile.getOriginalFilename();
+           //得到上传文件的后缀
+           String suffix = FilenameUtils.getExtension(oldFileName);
+           logger.info("==================后缀================="+suffix);
+           if (cardFile.getSize()>fileSize){//上传的图片超出大小
+                return "1";
+           }else if (suffix.equalsIgnoreCase("jpg")|| suffix.equalsIgnoreCase("png")
+                   || suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("pneg")){
+//                保存的文件名
+               String fileName=System.currentTimeMillis()+ RandomUtils.nextInt(1000000)+"_IDcard.jpg";
+               logger.info("===================文件名为=================="+fileName);
+               File file=new File(path,fileName);
+               if (!file.exists()){//文件不存在，创建
+                   file.mkdirs();
+               }
+               try {//将上传的文件保存到文件夹
+                    cardFile.transferTo(file);
+               }catch (Exception e){
+                   e.printStackTrace();
+                   logger.info("=============上传图片保存失败====================");
+               }
+               String url=req.getContextPath()+"/static/uploadFiles/"+fileName;
+               return url;
+            }else {//图片格式不正确
+               return "2";
+           }
+       }
+        if (bankFile!=null){//确定上传了文件
+            //得到上传文件的文件名
+            String oldFileName = bankFile.getOriginalFilename();
+            //得到上传文件的后缀
+            String suffix = FilenameUtils.getExtension(oldFileName);
+            logger.info("==================后缀================="+suffix);
+            if (bankFile.getSize()>fileSize){//上传的图片超出大小
+                return "1";
+            }else if (suffix.equalsIgnoreCase("jpg")|| suffix.equalsIgnoreCase("png")
+                    || suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("pneg")){
+//                保存的文件名
+                String fileName=System.currentTimeMillis()+ RandomUtils.nextInt(1000000)+"_bank.jpg";
+                logger.info("===================文件名为=================="+fileName);
+                File file=new File(path,fileName);
+                if (!file.exists()){//文件不存在，创建
+                    file.mkdirs();
+                }
+                try {//将上传的文件保存到文件夹
+                    bankFile.transferTo(file);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.info("=============上传图片保存失败====================");
+                }
+                String url=req.getContextPath()+"/static/uploadFiles/"+fileName;
+                return url;
+            }else {//图片格式不正确
+                return "2";
+            }
+        }
+        if (mCardFile!=null){//确定上传了文件
+            //得到上传文件的文件名
+            String oldFileName = mCardFile.getOriginalFilename();
+            //得到上传文件的后缀
+            String suffix = FilenameUtils.getExtension(oldFileName);
+            logger.info("==================后缀================="+suffix);
+            if (mCardFile.getSize()>fileSize){//上传的图片超出大小
+                return "1";
+            }else if (suffix.equalsIgnoreCase("jpg")|| suffix.equalsIgnoreCase("png")
+                    || suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("pneg")){
+//                保存的文件名
+                String fileName=System.currentTimeMillis()+ RandomUtils.nextInt(1000000)+"_IDcard.jpg";
+                logger.info("===================文件名为=================="+fileName);
+                File file=new File(path,fileName);
+                if (!file.exists()){//文件不存在，创建
+                    file.mkdirs();
+                }
+                try {//将上传的文件保存到文件夹
+                    mCardFile.transferTo(file);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.info("=============上传图片保存失败====================");
+                }
+                String url=req.getContextPath()+"/static/uploadFiles/"+fileName;
+                return url;
+            }else {//图片格式不正确
+                return "2";
+            }
+        }
+        if (mBankFile!=null){//确定上传了文件
+            //得到上传文件的文件名
+            String oldFileName = mBankFile.getOriginalFilename();
+            //得到上传文件的后缀
+            String suffix = FilenameUtils.getExtension(oldFileName);
+            logger.info("==================后缀================="+suffix);
+            if (mBankFile.getSize()>fileSize){//上传的图片超出大小
+                return "1";
+            }else if (suffix.equalsIgnoreCase("jpg")|| suffix.equalsIgnoreCase("png")
+                    || suffix.equalsIgnoreCase("jpeg") || suffix.equalsIgnoreCase("pneg")){
+//                保存的文件名
+                String fileName=System.currentTimeMillis()+ RandomUtils.nextInt(1000000)+"_bank.jpg";
+                logger.info("===================文件名为=================="+fileName);
+                File file=new File(path,fileName);
+                if (!file.exists()){//文件不存在，创建
+                    file.mkdirs();
+                }
+                try {//将上传的文件保存到文件夹
+                    mBankFile.transferTo(file);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.info("=============上传图片保存失败====================");
+                }
+                String url=req.getContextPath()+"/static/uploadFiles/"+fileName;
+                return url;
+            }else {//图片格式不正确
+                return "2";
+            }
+        }
+       return null;
+    }
+//    删除上传的图片
+    @RequestMapping(path = "/backend/delpic.html",produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    public String delpic(@RequestParam(value = "id",required = false)String id,
+                         @RequestParam(value = "picpath",required = false)String picpath,
+                         HttpServletRequest req){
+        String result="failed";//删除失败返回
+        if (picpath==null||picpath==""){
+            result="success";
+        }else {
+//            将图片路径解析成物理路径
+            String[] paths=picpath.split("/");
+//            得到路径
+            String path=req.getSession().getServletContext().getRealPath(paths[1]+File.separator+paths[2]+File.separator+paths[3]);
+            File file=new File(path);
+            if (file.exists()){
+                if (file.delete()){
+                    if (id.equals("0")){//添加用户时删除
+                        result="success";
+                    }else {//修改用户时删除
+                        User user=new User();
+                        user.setId(Integer.valueOf(id));
+                        if (picpath.indexOf("_IDcard.jpg")!=-1){
+                            user.setIdCardPicPath(picpath);
+                        }else if (picpath.indexOf("_bank.jpg")!=-1){
+                            user.setBankPicPath(picpath);
+                        }
+                        try {
+//                            调用删除业务
+                            if (userService.delpicService(user)){
+                                result="success";
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            logger.info("==============删除图片失败==============");
+                        }
+
+                    }
+                }
+            }
+        }
+        return result;
+
     }
 }

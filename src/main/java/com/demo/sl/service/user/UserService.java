@@ -80,4 +80,30 @@ public class UserService {
     public List<User> getUserListService(User user){
         return userDao.getUserList(user);
     }
+
+    /**
+     * 判断输入的用户名是否已存在
+     * @param user 查询条件
+     * @return 存在 返回0  非0不存在
+     */
+    public int getLoginCodeIsExitService(User user){
+        return userDao.getLoginCodeIsExit(user);
+    }
+
+    /**
+     * 添加用户数据业务
+     * @param user 待添加的数据
+     */
+    public void getAddUserService(User user){
+        userDao.addUser(user);
+    }
+
+    /**
+     * 删除用户上传的图片业务
+     * @param user 删除的条件
+     * @return true 删除成功
+     */
+    public boolean delpicService(User user){
+        return userDao.delpic(user);
+    }
 }
