@@ -54,4 +54,11 @@ public interface IUserDao {
      * @return true 删除成功  false 删除失败
      */
     boolean delpic(User user);
+
+    /**
+     * 根据id得到user表的信息
+     * @param id 条件
+     * @return
+     */
+    User getUser(Integer id);
 }

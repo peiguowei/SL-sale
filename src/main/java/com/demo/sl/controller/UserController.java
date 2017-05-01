@@ -1,6 +1,7 @@
 package com.demo.sl.controller;
 
 import com.demo.sl.common.Constants;
+import com.demo.sl.common.JsonDateValueProcessor;
 import com.demo.sl.common.PageSupport;
 import com.demo.sl.common.SQLTools;
 import com.demo.sl.entity.DataDictionary;
@@ -11,6 +12,7 @@ import com.demo.sl.service.role.RoleService;
 import com.demo.sl.service.user.UserService;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -446,5 +448,31 @@ public class UserController extends BaseController{
         }
         return result;
 
+    }
+//    查看用户信息
+    @RequestMapping(path = "/backend/getuser.html",produces = "text/html;charset=UTF-8",method = RequestMethod.POST)
+    @ResponseBody
+    public Object getViewUser(@RequestParam(required = false) Integer id){
+//        返回到前台的是json数据格式
+        String cJson="";
+        if (id==null||id.equals("")){
+            return "nodate";
+        }else {
+            try {
+                User user = new User();
+                user.setId(id);
+                User userView = userService.getUserService(user);
+//                进行日期格式处理  java转转成json
+                JsonConfig jsonConfig = new JsonConfig();
+                jsonConfig.registerJsonValueProcessor(Date.class,new JsonDateValueProcessor());
+//              java对象转换成json对象
+                JSONObject jo = JSONObject.fromObject(userView, jsonConfig);
+                cJson=jo.toString();//将json对象转换成json字符串
+            }catch (Exception e){
+                e.printStackTrace();
+                return "failed";
+            }
+        }
+        return cJson;
     }
 }

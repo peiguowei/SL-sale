@@ -48,13 +48,13 @@ $('.addusercancel').click(function(e){
 	$("#a_useraddress").val('');
 });
 
-$('.viewuser').click(function(e){
+$(".viewuser").click(function(e){
 	var m_id = $(this).attr('id');
 	$.ajax({
 		url: '/backend/getuser.html',
 		type: 'POST',
 		data:{id:m_id},
-		dataType: 'html',
+		dataType: 'JSON',
 		timeout: 1000,
 		error: function(){
 			alert("error");
@@ -65,44 +65,43 @@ $('.viewuser').click(function(e){
 			}else if("nodata" == result){
 				alert("没有数据！");
 			}else{
-				m = eval('(' + result + ')');
-				$("#v_id").val(m.id);
-				$("#v_logincode").val(m.loginCode);
-				$("#v_username").val(m.userName);
-				$("#v_birthday").val(m.birthday);
-				$("#v_cardtypename").val(m.cardTypeName);
-				$("#v_rolename").val(m.roleName);
-				$("#v_usertypename").val(m.userTypeName);
-				$("#v_sex").val(m.sex);
-				$("#v_idcard").val(m.idCard);
-				$("#v_country").val(m.country);
-				$("#v_mobile").val(m.mobile);
-				$("#v_email").val(m.email);
-				$("#v_postcode").val(m.postCode);
-				$("#v_bankaccount").val(m.bankAccount);
-				$("#v_accountholder").val(m.accountHolder);
-				$("#v_bankname").val(m.bankName);
-				$("#v_createtime").val(m.createTime);
-				var isstart = m.isStart;
+				$("#v_id").val(result.id);
+				$("#v_logincode").val(result.loginCode);
+				$("#v_username").val(result.userName);
+				$("#v_birthday").val(result.birthday);
+				$("#v_cardtypename").val(result.cardTypeName);
+				$("#v_rolename").val(result.roleName);
+				$("#v_usertypename").val(result.userTypeName);
+				$("#v_sex").val(result.sex);
+				$("#v_idcard").val(result.idCard);
+				$("#v_country").val(result.country);
+				$("#v_mobile").val(result.mobile);
+				$("#v_email").val(result.email);
+				$("#v_postcode").val(result.postCode);
+				$("#v_bankaccount").val(result.bankAccount);
+				$("#v_accountholder").val(result.accountHolder);
+				$("#v_bankname").val(result.bankName);
+				$("#v_createtime").val(result.createTime);
+				var isstart = result.isStart;
 				if(isstart == '1'){
 					$("#v_isstart").append("<option value=\"1\" selected=\"selected\">启用</option><option value=\"2\">不启用</option>");
 				}else{
 					$("#v_isstart").append("<option value=\"1\">启用</option><option value=\"2\" selected=\"selected\">不启用</option>");
 				}
 				
-				$("#v_useraddress").val(m.userAddress);
-				$("#v_refercode").val(m.referCode);
+				$("#v_useraddress").val(result.userAddress);
+				$("#v_refercode").val(result.referCode);
 				
-				$("#v_fileInputIDPath").val(m.idCardPicPath);
-				var v_idcardpicpath = m.idCardPicPath;
+				$("#v_fileInputIDPath").val(result.idCardPicPath);
+				var v_idcardpicpath = result.idCardPicPath;
 				if(v_idcardpicpath == null || v_idcardpicpath == "" ){
 					$("#v_idPic").append("暂无");
 				}else{
 					$("#v_idPic").append("<p><img src=\""+v_idcardpicpath+"?m="+Math.random()+"\" /></p>");
 				}
 				
-				$("#v_fileInputBankPath").val(m.bankPicPath);
-				var v_bankpicpath = m.bankPicPath;
+				$("#v_fileInputBankPath").val(result.bankPicPath);
+				var v_bankpicpath = result.bankPicPath;
 				if(v_bankpicpath == null || v_bankpicpath == "" ){
 					$("#v_bankPic").append("暂无");
 				}else{

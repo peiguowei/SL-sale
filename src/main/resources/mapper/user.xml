@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.demo.sl.dao.user.IUserDao">
+
     <resultMap id="userMap" type="com.demo.sl.entity.User">
         <id property="id" column="id"/>
         <result property="loginCode" column="loginCode"/>
@@ -146,4 +147,8 @@
         </trim>
         WHERE id=#{id}
     </update>
+    <!--根据id得到user表信息-->
+    <select id="getUser" resultMap="userMap">
+        SELECT * FROM au_user where id=#{id}
+    </select>
 </mapper>

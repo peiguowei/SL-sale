@@ -106,4 +106,13 @@ public class UserService {
     public boolean delpicService(User user){
         return userDao.delpic(user);
     }
+
+    /**
+     * 得到用户的信息
+     * @param user 条件（id）
+     * @return 返回user对象
+     */
+    public User getUserService(User user){
+        return userDao.getUser(user.getId());
+    }
 }
