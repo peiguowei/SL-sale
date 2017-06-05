@@ -187,6 +187,7 @@ public class UserController extends BaseController{
         model.addAttribute("cardTypeList",cardTypeList);
         return new ModelAndView("/backend/userlist");
     }
+//   根据数据字典获取用户类型
     @RequestMapping(path = "/backend/loadUserTypeList.html",produces = "text/html;charset=utf-8")
     @ResponseBody
     public Object getUserTypeList(@RequestParam(required = false)String s_role){
@@ -475,4 +476,25 @@ public class UserController extends BaseController{
         }
         return cJson;
     }
+//    修改用户信息
+    @RequestMapping(path = "/backend/modifyuser.html",method = RequestMethod.POST)
+    public ModelAndView modifyUser(HttpServletRequest req,@ModelAttribute("modifyUser")User modifyUser){
+        //判断用户是否登录
+        HttpSession session = req.getSession();
+        if (session.getAttribute(Constants.SESSION_USER)==null){//用户不存在
+//            返回到登录页面
+            return new ModelAndView("redirect:/");
+        }else {
+            try{
+//                设置更新时间
+                modifyUser.setLastUpdateTime(new Date());
+//                调用更新服务
+                userService.updatePwd(modifyUser);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return new ModelAndView("redirect:/backend/userlist.html");
+        }
+    }
+
 }

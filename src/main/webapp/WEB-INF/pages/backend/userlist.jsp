@@ -136,7 +136,7 @@
 						    </c:choose>
 					    </c:if>
 						<c:if test="${page.pageCount == null}">
-						<li class="active"><a href="javascript:void();" title="尾页">尾页</a></li>
+						<li class="active"><a href="javascript:void(0);" title="尾页">尾页</a></li>
 					  	</c:if>
 						
 					  </ul>
