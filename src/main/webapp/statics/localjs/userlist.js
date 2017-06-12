@@ -296,6 +296,8 @@ $("#m_roleId").change(function(){
 				alert("用户类型加载失败！");
 			}
 		},'json');	
+	}else{
+		$("#m_selectusertypename").val('');
 	}
 });
 

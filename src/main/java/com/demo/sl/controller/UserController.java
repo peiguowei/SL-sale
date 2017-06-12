@@ -267,7 +267,7 @@ public class UserController extends BaseController{
                              HttpServletRequest req){
         logger.info("====================开始=========================");
 //        得到保存上传图片的文件夹地址
-        String path=req.getSession().getServletContext().getRealPath("static"+ File.separator+"uploadFiles");
+        String path=req.getSession().getServletContext().getRealPath("statics"+ File.separator+"uploadfiles");
         logger.info("==================保存文件==================="+path);
 //        创建数据字典实例
         DataDictionary dataDictionary=new DataDictionary();
@@ -311,7 +311,7 @@ public class UserController extends BaseController{
                    e.printStackTrace();
                    logger.info("=============上传图片保存失败====================");
                }
-               String url=req.getContextPath()+"/static/uploadFiles/"+fileName;
+               String url=req.getContextPath()+"/statics/uploadfiles/"+fileName;
                return url;
             }else {//图片格式不正确
                return "2";
@@ -340,7 +340,7 @@ public class UserController extends BaseController{
                     e.printStackTrace();
                     logger.info("=============上传图片保存失败====================");
                 }
-                String url=req.getContextPath()+"/static/uploadFiles/"+fileName;
+                String url=req.getContextPath()+"/statics/uploadfiles/"+fileName;
                 return url;
             }else {//图片格式不正确
                 return "2";
@@ -369,7 +369,7 @@ public class UserController extends BaseController{
                     e.printStackTrace();
                     logger.info("=============上传图片保存失败====================");
                 }
-                String url=req.getContextPath()+"/static/uploadFiles/"+fileName;
+                String url=req.getContextPath()+"/statics/uploadfiles/"+fileName;
                 return url;
             }else {//图片格式不正确
                 return "2";
@@ -398,7 +398,7 @@ public class UserController extends BaseController{
                     e.printStackTrace();
                     logger.info("=============上传图片保存失败====================");
                 }
-                String url=req.getContextPath()+"/static/uploadFiles/"+fileName;
+                String url=req.getContextPath()+"/statics/uploadfiles/"+fileName;
                 return url;
             }else {//图片格式不正确
                 return "2";
