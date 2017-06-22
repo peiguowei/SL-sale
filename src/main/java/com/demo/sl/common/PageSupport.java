@@ -10,7 +10,7 @@ public class PageSupport {
     private Integer pageCount;//总页数
     private Integer totalCount=0;//总行数
     private Integer page=1;//当前页
-    private Integer pageSize=1;//一页显示的行数
+    private Integer pageSize=2;//一页显示的行数
     private Integer num=3;//当前页前后显示的个数
     private List items=new ArrayList();//当前页面内容的集合
 

@@ -115,4 +115,13 @@ public class UserService {
     public User getUserService(User user){
         return userDao.getUser(user.getId());
     }
+
+    /**
+     * 删除用户信息业务
+     * @param user  包含删除的条件
+     * @return 返回 true/false
+     */
+    public Boolean delUserDataService(User user){
+        return userDao.delUser(user);
+    }
 }

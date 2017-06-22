@@ -61,4 +61,11 @@ public interface IUserDao {
      * @return
      */
     User getUser(Integer id);
+
+    /**
+     * 删除user表中的信息
+     * @param user 删除的条件
+     * @return true 删除成功 false 删除失败
+     */
+    Boolean delUser(User user);
 }

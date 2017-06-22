@@ -151,4 +151,8 @@
     <select id="getUser" resultMap="userMap">
         SELECT * FROM au_user where id=#{id}
     </select>
+    <!--删除用户-->
+    <delete id="delUser">
+        DELETE  FROM  au_user WHERE id=#{id}
+    </delete>
 </mapper>

@@ -496,5 +496,36 @@ public class UserController extends BaseController{
             return new ModelAndView("redirect:/backend/userlist.html");
         }
     }
-
+//    删除用户信息
+    @RequestMapping(path = "/backend/deluser.html",produces = "text/html;charset=utf-8")
+    @ResponseBody
+    public String delUserData(@RequestParam(value = "delId",required = false)Integer delId,
+                          @RequestParam(value = "delIdCardPicPath",required = false)String delIdCardPicPath,
+                          @RequestParam(value = "delBankPicPath",required = false)String delBankPicPath,
+                          @RequestParam(value = "delUserType",required = false)String delUserType,
+                          HttpServletRequest req){
+        String result="failed";
+        User delUser = new User();
+//        设置id
+        delUser.setId(delId);
+        try {
+//            判断用户能否删除 2普通消费会员 3vip会员 4加盟店这三者无法删除
+            if (delUserType.equals("2")||delUserType.equals("3")||delUserType.equals("4")){
+                result="noallow";
+            }else {
+//                可以删除
+//                删除的规则 先删除附件 在删除信息
+                if (this.delpic(delId.toString(),delIdCardPicPath,req).equals("success")&&
+                        this.delpic(delId.toString(),delBankPicPath,req).equals("success")){
+                    if (userService.delUserDataService(delUser)){
+                        return "success";
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            logger.info("----------------删除用户信息失败-----------------------");
+        }
+        return result;
+    }
 }
