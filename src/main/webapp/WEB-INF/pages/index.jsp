@@ -24,7 +24,7 @@
     <link rel="shortcut icon" href="/statics/img/favicon.ico">
 </head>
 
-<body>
+<body onkeydown="login()">
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="row-fluid">
@@ -62,7 +62,13 @@
         </div>
     </div>
 </div>
-
+<script>
+    function login() {
+        if (event.keyCode==13){
+            $("#loginBtn").click();
+        }
+    }
+</script>
 <script src="../statics/js/jquery-1.7.2.min.js"></script>
 <script src="../statics/localjs/index.js"></script>
 </body>

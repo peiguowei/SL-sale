@@ -3,8 +3,44 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.demo.sl.dao.role.IRoleDao">
+    <resultMap id="roleMap" type="com.demo.sl.entity.Role">
+        <id column="id" property="id"></id>
+        <result column="roleCode" property="roleCode"></result>
+        <result column="roleName" property="roleName"></result>
+        <result column="createDate" property="createDate"></result>
+        <result column="isStart" property="isStart"></result>
+        <result column="createBy" property="createBy"></result>
+    </resultMap>
     <!--得到数据库角色表的所有信息-->
     <select id="getRoleList" resultType="com.demo.sl.entity.Role">
         SELECT * FROM au_role
     </select>
+    <!--根据isStart得到角色表的信息-->
+    <select id="getRoleListByIsStart" resultMap="roleMap">
+        SELECT * FROM au_role where isStart=1
+    </select>
+    <!--根据条件获取角色信息表的信息-->
+    <select id="getRoleBy" resultMap="roleMap">
+        SELECT * FROM au_role where roleCode=#{roleCode} OR  roleName=#{roleName}
+    </select>
+    <!--添加角色-->
+    <insert id="addRole">
+        INSERT INTO au_role (roleCode,roleName,createDate,isStart,createdBy) VALUES (#{roleCode},#{roleName},#{createDate},#{isStart},#{createdBy})
+    </insert>
+    <!--删除角色-->
+    <delete id="deleteRole">
+        DELETE FROM au_role where id=#{id}
+    </delete>
+    <!--修改角色-->
+    <update id="modifyRole">
+        UPDATE au_role
+        <trim prefix="set" suffixOverrides=",">
+            <if test="roleCode!=null">roleCode=#{roleCode},</if>
+            <if test="roleName!=null">roleName=#{roleName},</if>
+            <if test="createDate!=null">createDate=#{createDate},</if>
+            <if test="createdBy!=null">createdBy=#{createdBy},</if>
+            <if test="isStart!=null">isStart=#{isStart},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
 </mapper>

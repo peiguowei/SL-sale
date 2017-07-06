@@ -114,11 +114,11 @@
         <aop:pointcut expression="execution(* *com.demo.sl.service..*(..))" id="transService"/>
         <aop:advisor pointcut-ref="transService" advice-ref="txAdvice"/>
     </aop:config>
-    <!--txAdvice 事务处理 propagation="REQUIRED"都需要事务处理 以hl开头的所有service方法
+    <!--txAdvice 事务处理 propagation="REQUIRED"都需要事务处理 以pz开头的所有service方法
     rollback-for什么情况下进行回滚-->
     <tx:advice id="txAdvice" transaction-manager="transactionManager">
         <tx:attributes>
-            <tx:method name="hl*" propagation="REQUIRED" rollback-for="Exception"/>
+            <tx:method name="pz*" propagation="REQUIRED" rollback-for="Exception"/>
         </tx:attributes>
     </tx:advice>
     <!-- AOP 事务处理 结束 -->

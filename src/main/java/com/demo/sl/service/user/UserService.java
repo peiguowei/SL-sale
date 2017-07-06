@@ -124,4 +124,13 @@ public class UserService {
     public Boolean delUserDataService(User user){
         return userDao.delUser(user);
     }
+
+    /**
+     * 通过特定条件得到user表业务
+     * @param user 特定的条件
+     * @return
+     */
+    public List<User> getUserDataBySearchService(User user){
+        return userDao.getUserBySearch(user);
+    }
 }

@@ -155,4 +155,17 @@
     <delete id="delUser">
         DELETE  FROM  au_user WHERE id=#{id}
     </delete>
+    <!--通过特定的查询条件的得到user信息-->
+    <select id="getUserBySearch" resultMap="userMap">
+        SELECT * FROM au_user
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="roleId !=null">
+                AND roleId=#{roleId}
+            </if>
+        </trim>
+    </select>
+    <!--通过条件修改user表角色相关内容-->
+    <update id="modifyUserForRole">
+        UPDATE au_user SET roleName=#{roleName} WHERE roleId=#{roleId}
+    </update>
 </mapper>

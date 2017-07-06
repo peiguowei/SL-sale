@@ -94,7 +94,7 @@ public class UserController extends BaseController{
                                     @RequestParam(required = false)String s_isStart){
         /*得到session的对象*/
         HttpSession session = req.getSession();
-//        得到菜单列表
+//        得到菜单列表 session.getAttribute(Constants.SESSION_BASE_MODEL)取出来是map类型
         Map<String, Object> baseModel = (Map<String, Object>) session.getAttribute(Constants.SESSION_BASE_MODEL);
         List<Role> roleList=null;
         List<DataDictionary> cardTypeList=null;
@@ -113,7 +113,7 @@ public class UserController extends BaseController{
             }
             try{
                 //得到角色列表的信息（用户管理搜索栏）
-                roleList = roleService.getRoleListService();
+                roleList = roleService.getRoleListOfStartService();
             }catch (Exception e){
                 e.printStackTrace();
                 logger.info("======================得到角色信息表失败===========");

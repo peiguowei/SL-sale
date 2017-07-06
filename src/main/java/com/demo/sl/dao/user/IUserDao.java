@@ -68,4 +68,17 @@ public interface IUserDao {
      * @return true 删除成功 false 删除失败
      */
     Boolean delUser(User user);
+
+    /**
+     * 通过特定的条件查询user表
+     * @param user 条件
+     * @return 非null user对象的集合
+     */
+    List<User> getUserBySearch(User user);
+
+    /**
+     * 通过条件修改user表中角色相关内容
+     * @param user 条件
+     */
+    void modifyUserForRole(User user);
 }
