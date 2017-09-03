@@ -39,4 +39,13 @@ public class FunctionService {
         List<Function> subFunctionMenu = functionDao.getSubFunction(function);
         return subFunctionMenu;
     }
+
+    /**
+     * 根据条件从数据库中得到主子功能列表业务
+     * @param function  条件
+     * @return
+     */
+    public List<Function> getFunctionMenuListService(Function function){
+        return functionDao.getFunctionList(function);
+    }
 }

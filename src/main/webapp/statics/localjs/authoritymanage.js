@@ -18,14 +18,14 @@ $('.roleNameAuthority').click(function(){
 			}else{
 				var json = eval('(' + result + ')');
 				listr = "";
-				
+
 				for(var i=0;i<json.length;i++){
 					listr += "<li>";
 					listr += "<ul id=\"subfuncul"+json[i].mainFunction.id+"\" class=\"subfuncul\">";
 					listr += "<li  class=\"functiontitle\" ><input id='functiontitle"+json[i].mainFunction.id+"' onchange='mainFunctionSelectChange(this,"+json[i].mainFunction.id+");' funcid=\""+json[i].mainFunction.id+"\" type='checkbox' />"+json[i].mainFunction.functionName+"</li>";
-					for(j=0;j<json[i].subFunctions.length;j++){
+					for(j=0;j<json[i].subFunctionList.length;j++){
 						
-						listr += "<li><input onchange='subFunctionSelectChange(this,"+json[i].mainFunction.id+");' funcid=\""+json[i].subFunctions[j].id+"\" type='checkbox' /> "+json[i].subFunctions[j].functionName+"</li>";
+						listr += "<li><input onchange='subFunctionSelectChange(this,"+json[i].mainFunction.id+");' funcid=\""+json[i].subFunctionList[j].id+"\" type='checkbox' /> "+json[i].subFunctionList[j].functionName+"</li>";
 					}
 					listr += "</ul></li>";
 				}

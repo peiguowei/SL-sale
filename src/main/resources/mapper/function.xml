@@ -19,10 +19,16 @@
         <result property="creationTime" column="creationTime"/>
         <result property="createdBy" column="createdBy"/>
     </resultMap>
+    <!--根据角色得到主功能列表 权限-->
     <select id="getMainFunction" resultMap="functionMap">
         SELECT * FROM au_function WHERE id IN (SELECT functionId FROM au_authority WHERE roleId=#{roleId}) AND parentId=0;
     </select>
+    <!--根据角色得到子功能列表 权限-->
     <select id="getSubFunction" resultMap="functionMap">
         SELECT * FROM au_function WHERE parentId=#{id} AND id IN (SELECT functionId FROM au_authority WHERE roleId=#{roleId})
+    </select>
+    <!--根据id 得到主子功能列表-->
+    <select id="getFunctionList" resultMap="functionMap">
+        SELECT * FROM au_function WHERE parentId=#{id}
     </select>
 </mapper>

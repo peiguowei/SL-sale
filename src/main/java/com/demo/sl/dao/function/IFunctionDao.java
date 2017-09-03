@@ -22,4 +22,11 @@ public interface IFunctionDao {
      * @return 返回子功能列表集合
      */
     List<Function> getSubFunction(Function function);
+
+    /**
+     * 得到主子功能列表
+     * @param function 条件 parentId
+     * @return 返回
+     */
+    List<Function> getFunctionList(Function function);
 }
