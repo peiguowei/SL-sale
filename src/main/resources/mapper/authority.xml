@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.sl.dao.authority.IAuthorityDao">
+    <resultMap id="authorityMap" type="com.demo.sl.entity.Authority">
+        <id column="id" property="id"></id>
+        <result column="roleId" property="roleId"></result>
+        <result column="functionId" property="functionId"></result>
+        <result column="userTypeId" property="userTypeId"></result>
+        <result column="creationTime" property="creationTime"></result>
+        <result column="createBy" property="createBy"></result>
+    </resultMap>
+    <!--得到权限列表 有条件-->
+    <select id="getAuthority" resultMap="authorityMap">
+        SELECT * FROM au_authority WHERE roleId=#{roleId} and functionId=#{functionId}
+    </select>
+    <!--根据条件删除权限表-->
+    <delete id="delAuthority">
+        DELETE FROM au_authority
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id!=null">
+                AND id=#{id}
+            </if>
+            <if test="roleId!=null">
+                AND roleId=#{roleId}
+            </if>
+        </trim>
+    </delete>
+    <!--新增权限-->
+    <insert id="addAuthority">
+        INSERT INTO au_authority (roleId,functionId,userTypeId,creationTime,createdBy) VALUES (
+			#{roleId},
+			#{functionId},
+			#{userTypeId},
+			#{creationTime},
+			#{createdBy}
+			)
+    </insert>
+</mapper>

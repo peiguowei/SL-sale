@@ -31,4 +31,8 @@
     <select id="getFunctionList" resultMap="functionMap">
         SELECT * FROM au_function WHERE parentId=#{id}
     </select>
+    <!--根据条件得到一二三...菜单列表-->
+    <select id="getFunctionListByIn" resultMap="functionMap">
+        SELECT * FROM au_function WHERE id in (#{str}) OR parentId in (SELECT id FROM au_function where id in (#{strs} AND parentId>0)) or parentId=999
+    </select>
 </mapper>

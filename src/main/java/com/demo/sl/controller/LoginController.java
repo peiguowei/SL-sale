@@ -65,27 +65,15 @@ public class LoginController extends BaseController {
         //得到登录信息
         User user =(User)session.getAttribute(Constants.SESSION_USER);
         logger.debug("main==========================================");
-        List<Menu> menuList=new ArrayList();//菜单列表结合
+        List<Menu> mList = null;
         if (user!=null){   //user不等于空 证明已经登录
             Map<String,Object>model = new HashMap();
             model.put("user",user);//用户的登录信息
             if (!redisAPI.exist("menuList"+user.getRoleId())){//第一次登陆 redis中没有数据
-                //根据当前用户获取主功能菜单列表mList
-                List<Function> mList = functionService.getFunctionMainMenuService(user.getRoleId());
-                if(mList!=null){//主菜单列表不为空
-                    for (Function function:mList){
-                        Menu menu=new Menu();
-                        menu.setMainMenu(function);
-                        function.setRoleId(user.getRoleId());
-                        //根据单个主功能信息得到子功能菜单列表
-                        List<Function> subList = functionService.getFunctionSubMenuService(function);
-                        if (subList!=null){//子菜单列表不为空
-                            menu.setSubMenu(subList);
-                        }
-                        menuList.add(menu);//这个集合既有主功能又有子功能菜单
-                    }
+                mList = getFuncByCurrentUser(user.getRoleId());
+                if(null != mList){
                     //json
-                    JSONArray jsonArray = JSONArray.fromObject(menuList);//得到json对象
+                    JSONArray jsonArray = JSONArray.fromObject(mList);//得到json对象
                     String jsonString = jsonArray.toString();//得到json字符串
                     logger.info("=============================================================================================="+jsonString);
                     model.put("menuList",jsonString);
@@ -95,7 +83,7 @@ public class LoginController extends BaseController {
                 String redisMenuListString = redisAPI.get("menuList" + user.getRoleId());
                 logger.info("=========================================================================================menuList from redis"+redisMenuListString);
                 if (redisMenuListString!=null && !redisMenuListString.equals("")){
-                    model.put("menuList",redisMenuListString);
+                     model.put("menuList",redisMenuListString);
                 }else {
                     return new ModelAndView("redirect:/");
                 }
@@ -105,6 +93,7 @@ public class LoginController extends BaseController {
         }
         return new ModelAndView("redirect:/");
     }
+
     //注销登录
     @RequestMapping(path = "/logout.html",method = RequestMethod.GET)
     public String logout(HttpServletRequest req){
@@ -112,5 +101,28 @@ public class LoginController extends BaseController {
         session.removeAttribute(Constants.SESSION_USER);//清空session
         session.invalidate();//session失效
         return "index";
+    }
+    /*
+    根据当前用户的角色id的到功能列表（对应菜单）
+     */
+    protected List<Menu> getFuncByCurrentUser(int roleId) {
+        List<Menu> menuList=new ArrayList();//菜单列表结合
+        //根据当前用户获取主功能菜单列表mList
+        List<Function> mList = functionService.getFunctionMainMenuService(roleId);
+        if (mList != null) {//主菜单列表不为空
+            for (Function function : mList) {
+                Menu menu = new Menu();
+                menu.setMainMenu(function);
+                function.setRoleId(roleId);
+                //根据单个主功能信息得到子功能菜单列表
+                List<Function> subList = functionService.getFunctionSubMenuService(function);
+                if (subList != null) {//子菜单列表不为空
+                    menu.setSubMenu(subList);
+                }
+
+                menuList.add(menu);//这个集合既有主功能又有子功能菜单
+            }
+        }
+        return menuList;
     }
 }

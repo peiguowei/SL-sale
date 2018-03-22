@@ -2,6 +2,7 @@ package com.demo.sl.dao.function;
 
 import com.demo.sl.entity.Authority;
 import com.demo.sl.entity.Function;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -29,4 +30,18 @@ public interface IFunctionDao {
      * @return 返回
      */
     List<Function> getFunctionList(Function function);
+
+    /**
+     * 根据in 条件得到需要的功能列表
+     * @param strs 条件 一串字符串
+     * @return
+     */
+    List<Function> getFunctionListByIn(@RequestParam("strs") String strs);
+
+    /**
+     * 通过roleId得到功能列表 两张表 权限与功能
+     * @param authority 条件
+     * @return
+     */
+    List<Function> getFunctionListByRoleId(Authority authority);
 }

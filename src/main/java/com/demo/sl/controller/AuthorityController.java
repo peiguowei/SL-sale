@@ -1,16 +1,19 @@
 package com.demo.sl.controller;
 
 import com.demo.sl.common.Constants;
-import com.demo.sl.entity.Function;
-import com.demo.sl.entity.RoleFunctions;
+import com.demo.sl.common.RedisAPI;
+import com.demo.sl.entity.*;
+import com.demo.sl.service.authority.AuthorityService;
 import com.demo.sl.service.function.FunctionService;
 import com.demo.sl.service.role.RoleService;
 import net.sf.json.JSONArray;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,15 +26,25 @@ import java.util.Map;
 
 /**
  * 权限控制层 用于进行权限管理
+ * @author  peizi
+ * @date 2018-3-23
  */
 @Controller
-public class AuthorityManage extends BaseController{
-    //获取日志
-    private Logger log=Logger.getLogger(AuthorityManage.class);
+public class AuthorityController extends BaseController{
+    /**
+     * 获取日志
+     */
+    private Logger log=Logger.getLogger(AuthorityController.class);
     @Resource
     RoleService roleService;
     @Resource
     FunctionService functionService;
+    @Resource
+    AuthorityService authorityService;
+    @Resource
+    LoginController loginController;
+    @Resource
+    RedisAPI redisAPI;
 
     //打开权限管理页面
     @RequestMapping(path = "/backend/authoritymanage.html",method = {RequestMethod.POST,RequestMethod.GET})
@@ -80,6 +93,57 @@ public class AuthorityManage extends BaseController{
         }catch (Exception e){
             e.printStackTrace();
             log.info("============================得到菜单列表失败:"+e.getMessage()+"===========================================");
+        }
+        return resultString;
+    }
+    //得到权限回显状态
+    @RequestMapping(path = "/backend/getAuthorityDefault.html",produces = "text/html;charset='utf-8'")
+    @ResponseBody
+    public String getDefaultState(@RequestParam Integer rid,@RequestParam Integer fid){
+        String resultString="nodata";
+        try {
+            Authority authority = new Authority();
+            authority.setRoleId(rid);
+            authority.setFunctionId(fid);
+            if (authorityService.getAuthorityService(authority)!=null){
+                return "success";
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("==============================回显失败原因"+e.getMessage()+"=======================================");
+        }
+        return resultString;
+    }
+    @RequestMapping(path = "/backend/modifyAuthority.html",produces = {"text/html;charset=UTF-8"})
+    @ResponseBody
+    public String modifyAuthority(HttpServletRequest req,@RequestParam String ids){
+        String resultString="nodata";
+        try {
+            //判断ids不为空
+            if (ids!=null){
+                //授权规则:先删除后修改==事务
+                String[] idsArrayString= StringUtils.split(ids,"-");
+                if (idsArrayString.length>0){
+                    //得到当前的登录用户
+                    HttpSession session = req.getSession();
+                    User user = (User) session.getAttribute(Constants.SESSION_USER);
+                    //调用授权业务
+                    authorityService.pz_addAuthorityService(idsArrayString,user.getLoginCode());
+
+                    //存放到redis缓存中 权限已修改加载新的权限
+                    List<Menu> menuList = loginController.getFuncByCurrentUser(Integer.parseInt(idsArrayString[0]));
+                    JSONArray jsonArray = JSONArray.fromObject(menuList);
+                    redisAPI.set("menuList"+idsArrayString[0],jsonArray.toString());
+
+                    //得到role 拥有功能的 url to redis
+                    Authority authority = new Authority();
+                    authority.setRoleId(Integer.valueOf(idsArrayString[0]));
+
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            log.info("===============================授权失败："+e.getMessage()+"=============================");
         }
         return resultString;
     }
