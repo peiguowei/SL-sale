@@ -39,10 +39,17 @@ public class LoginController extends BaseController {
     private FunctionService functionService;
     @Resource
     private RedisAPI redisAPI;
-    //引入日志
+    /**
+     * 引入日志
+     */
     private Logger logger=Logger.getLogger(LoginController.class);
 
-    //登录操作
+    /**
+     * 登录操作
+     * @param user
+     * @param req
+     * @return
+     */
     @RequestMapping(path = "/login.html",method = RequestMethod.POST)
     @ResponseBody
     public String login(String user, HttpServletRequest req){

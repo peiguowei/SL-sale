@@ -10,6 +10,7 @@ import java.util.Date;
 
 /**
  * 基类 共有的数据
+ * @author peiguowei
  */
 public class BaseController {
     /**
