@@ -64,7 +64,12 @@ public class LoginController extends BaseController {
         String result = userService.userLoginService(userOne,req);
         return result;
     }
-    //登录成功跳转页面
+
+    /**
+     * 登录成功跳转界面
+     * @param req
+     * @return
+     */
     @RequestMapping(path = "/main.html",method = RequestMethod.GET)
     public ModelAndView mainPage(HttpServletRequest req){
         //得到session对象
@@ -73,15 +78,24 @@ public class LoginController extends BaseController {
         User user =(User)session.getAttribute(Constants.SESSION_USER);
         logger.debug("main==========================================");
         List<Menu> mList = null;
-        if (user!=null){   //user不等于空 证明已经登录
-            Map<String,Object>model = new HashMap();
-            model.put("user",user);//用户的登录信息
-            if (!redisAPI.exist("menuList"+user.getRoleId())){//第一次登陆 redis中没有数据
+        if (user!=null){
+            //user不等于空 证明已经登录
+            Map<String,Object>model = new HashMap(16);
+            //用户的登录信息
+            model.put("user",user);
+
+            String menuList = "menuList";
+            if (!redisAPI.exist(menuList+user.getRoleId())){
+                //第一次登陆 redis中没有数据
                 mList = getFuncByCurrentUser(user.getRoleId());
                 if(null != mList){
-                    //json
-                    JSONArray jsonArray = JSONArray.fromObject(mList);//得到json对象
-                    String jsonString = jsonArray.toString();//得到json字符串
+                    /*
+                    json
+                    等待json对象
+                     */
+                    JSONArray jsonArray = JSONArray.fromObject(mList);
+                    //得到JSON字符串
+                    String jsonString = jsonArray.toString();
                     logger.info("=============================================================================================="+jsonString);
                     model.put("menuList",jsonString);
                     redisAPI.set("menuList"+user.getRoleId(),jsonString);
